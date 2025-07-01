@@ -2,6 +2,7 @@ import os
 from datetime import datetime, timezone
 
 import pandas as pd
+import altair as alt
 import streamlit as st
 
 DATA_FILE = "data.csv"
@@ -25,6 +26,20 @@ latest_count = _df["count"].iloc[-1]
 
 st.metric(label="Current page views (latest)", value=latest_count, delta=None)
 
-st.line_chart(_df["count"], use_container_width=True)
+max_count = _df["count"].max()
+chart = (
+    alt.Chart(_df.reset_index())
+    .mark_line()
+    .encode(
+        x=alt.X("timestamp:T", title="Timestamp"),
+        y=alt.Y(
+            "count:Q",
+            title="Page Views",
+            scale=alt.Scale(domain=[500, max_count + 10]),
+        ),
+        tooltip=["timestamp:T", "count:Q"],
+    )
+)
+st.altair_chart(chart, use_container_width=True)
 
 st.caption(f"Last updated: {latest_ts.strftime('%Y-%m-%d %H:%M UTC')}")
