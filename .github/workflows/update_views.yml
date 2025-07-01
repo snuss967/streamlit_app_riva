@@ -3,7 +3,7 @@ name: Update view count
 on:
   schedule:
     # Runs at the top of every hour (UTC)
-    - cron: "0 * * * *"
+    - cron: "20 * * * *"
   workflow_dispatch:
 
 jobs:
