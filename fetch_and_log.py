@@ -35,11 +35,6 @@ def append_result(count: int) -> None:
     else:
         df = pd.DataFrame(columns=["timestamp", "count"])
 
-    # Avoid duplicate rows if count hasn\'t changed since last entry.
-    if not df.empty and df["count"].iloc[-1] == count:
-        print("No change in view‑count; skipping append.")
-        return
-
     df = pd.concat(
         [df, pd.DataFrame([{"timestamp": ts, "count": count}])],
         ignore_index=True,
