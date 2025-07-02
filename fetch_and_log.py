@@ -12,21 +12,17 @@ from datetime import datetime, timezone
 import pandas as pd
 import requests
 
-DOC_NUM = "2025-12347"
 DATA_FILE = "data.csv"
 API_URL = (
-    "https://www.federalregister.gov/api/v1/public_inspection_documents.json?per_page=500"
+    "https://www.federalregister.gov/api/v1/public_inspection_documents/2025-12347.json"
 )
 
 def get_view_count() -> int:
     """Return the current view‑count for the target document."""
     resp = requests.get(API_URL, timeout=30)
     resp.raise_for_status()
-    for item in resp.json().get("results", []):
-        if item.get("document_number") == DOC_NUM:
-            return int(item["page_views"]["count"])
-    raise ValueError(f"Document {DOC_NUM} not found in API response")
-
+    return resp.json().get("page_views", {}).get("count")
+    
 def append_result(count: int) -> None:
     """Append (timestamp, count) to DATA_FILE, creating it if necessary."""
     ts = datetime.now(timezone.utc).isoformat()
